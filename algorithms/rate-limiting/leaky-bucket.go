@@ -1,4 +1,4 @@
-package algorithms
+package rate_limiting
 
 import (
 	"context"
@@ -6,20 +6,13 @@ import (
 	"log"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/xBlaz3kx/dsa/pkg/queue"
+	"github.com/xBlaz3kx/dsa/structures/queue"
 )
 
-type Request struct {
-	ID      string
-	Content string
-}
-
-func NewRequest(content string) Request {
-	return Request{
-		ID:      uuid.New().String(),
-		Content: content,
-	}
+type leakyBucketEntry struct {
+	ID          string
+	Content     string
+	SubmittedAt time.Time
 }
 
 type LeakyBucket struct {
@@ -30,30 +23,36 @@ type LeakyBucket struct {
 	capacity int
 
 	// FIFO queue to store and process the requests from
-	queue *queue.ThreadSafeQueue[Request]
+	queue *queue.ThreadSafeQueue[leakyBucketEntry]
 }
 
 func NewLeakyBucket(maxRate, capacity int) *LeakyBucket {
 	return &LeakyBucket{
 		rate:     maxRate,
 		capacity: capacity,
-		queue:    queue.NewThreadSafeQueue[Request](),
+		queue:    queue.NewThreadSafeQueue[leakyBucketEntry](),
 	}
 }
 
 // AddRequestToBucket Add the request to the queue for processing. Returns an error if a message cannot be processed.
 func (lb *LeakyBucket) AddRequestToBucket(req Request) error {
-	if lb.rate <= lb.queue.Size() {
+	if lb.capacity <= lb.queue.Size() {
 		return errors.New("cannot process the request - bucket full")
 	}
 
-	lb.queue.Push(req)
+	entry := leakyBucketEntry{
+		ID:          req.GetID(),
+		Content:     req.GetContent(),
+		SubmittedAt: time.Now(),
+	}
+
+	lb.queue.Push(entry)
 	return nil
 }
 
 // Start will start processing request with a constant flow rate.
 func (lb *LeakyBucket) Start(ctx context.Context) {
-	processingRate := time.Duration(lb.rate) / time.Second
+	processingRate := time.Duration(lb.rate) * time.Millisecond
 	ticker := time.NewTicker(processingRate)
 
 	for {
@@ -61,11 +60,13 @@ func (lb *LeakyBucket) Start(ctx context.Context) {
 		case _ = <-ticker.C:
 			lb.processNext()
 		case <-ctx.Done():
+			ticker.Stop()
 			return
 		}
 	}
 }
 
+// processNext will process the next request from the queue.
 func (lb *LeakyBucket) processNext() {
 	req, err := lb.queue.Pop()
 	if err != nil {
@@ -73,5 +74,8 @@ func (lb *LeakyBucket) processNext() {
 		return
 	}
 
-	log.Printf("processed request %s at %s with content %s", req.ID, time.Now().Format(time.RFC3339), req.Content)
+	submittedAt := req.SubmittedAt.Format(time.RFC3339)
+	processedAt := time.Now().Format(time.RFC3339)
+
+	log.Printf("processed request %s (submitted at: %s) at %s with content \"%s\"", req.ID, submittedAt, processedAt, req.Content)
 }

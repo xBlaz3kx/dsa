@@ -4,34 +4,36 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xBlaz3kx/dsa/pkg/queue"
+	"github.com/xBlaz3kx/dsa/structures/queue"
 )
 
-type BinaryTree struct {
-	root *Node
+type BinaryTree[T any] struct {
+	root *Node[T]
 }
 
-func NewBinaryTree() *BinaryTree {
-	return &BinaryTree{}
+func NewBinaryTree[T any]() *BinaryTree[T] {
+	return &BinaryTree[T]{
+		root: nil,
+	}
 }
 
-func (t *BinaryTree) Print() {
+func (t *BinaryTree[T]) Print() {
 	if t.root != nil {
 		t.root.PrintNodes()
 	}
 }
 
-func (t *BinaryTree) Insert(value int) {
+func (t *BinaryTree[T]) Insert(value T) {
 	if t.root != nil {
 		t.root.AddNode(value)
 		return
 	}
 
-	t.root = &Node{Value: value}
+	t.root = &Node[T]{Value: value}
 }
 
-func (t *BinaryTree) FindBFS(value int) bool {
-	q := queue.NewQueue[any]()
+func (t *BinaryTree[T]) FindBFS(value any) bool {
+	q := queue.NewQueue[*Node]()
 
 	q.Push(t.root.LeftChild)
 	q.Push(t.root.RightChild)
@@ -42,17 +44,17 @@ func (t *BinaryTree) FindBFS(value int) bool {
 			continue
 		}
 
-		tempNode := pop.(*Node)
+		tempNode := pop
 		if tempNode != nil {
-			fmt.Println(tempNode.Value)
-			if tempNode.Value == value {
+			fmt.Println((*tempNode).Value)
+			if (*tempNode).Value == value {
 				return true
 			}
-			if tempNode.RightChild != nil {
-				q.Push(tempNode.RightChild)
+			if (*tempNode).RightChild != nil {
+				q.Push((*tempNode).RightChild)
 			}
-			if tempNode.LeftChild != nil {
-				q.Push(tempNode.LeftChild)
+			if (*tempNode).LeftChild != nil {
+				q.Push((*tempNode).LeftChild)
 			}
 		}
 	}
@@ -60,7 +62,7 @@ func (t *BinaryTree) FindBFS(value int) bool {
 	return false
 }
 
-func (t *BinaryTree) BFS() {
+func (t *BinaryTree[T]) BFS() {
 	q := queue.NewQueue[*Node]()
 
 	if t.root != nil {
@@ -78,29 +80,29 @@ func (t *BinaryTree) BFS() {
 
 		tempNode := pop
 		if tempNode != nil {
-			log.Println(tempNode.Value)
+			log.Println((*tempNode).Value)
 
-			if tempNode.RightChild != nil {
-				q.Push(tempNode.RightChild)
+			if (*tempNode).RightChild != nil {
+				q.Push((*tempNode).RightChild)
 			}
-			if tempNode.LeftChild != nil {
-				q.Push(tempNode.LeftChild)
+			if (*tempNode).LeftChild != nil {
+				q.Push((*tempNode).LeftChild)
 			}
 		}
 	}
 }
 
-func (t *BinaryTree) FindDFS(value int) bool {
+func (t *BinaryTree[T]) FindDFS(value int) bool {
 	return t.root.HasValueDFS(value)
 }
 
-type Node struct {
-	Value      int
-	LeftChild  *Node
-	RightChild *Node
+type Node[T any] struct {
+	Value      T
+	LeftChild  *Node[T]
+	RightChild *Node[T]
 }
 
-func (n *Node) AddNode(value int) {
+func (n *Node[T]) AddNode(value T) {
 	// Rule: Left child value should be always lesser than right child value
 	if n.Value < value {
 		if n.RightChild == nil {
@@ -122,7 +124,7 @@ func (n *Node) AddNode(value int) {
 	}
 }
 
-func (n *Node) HasValueDFS(value int) bool {
+func (n *Node[T]) HasValueDFS(value T) bool {
 
 	// Check if this nodes' value matches the searched value
 	if n.Value != value {
@@ -147,7 +149,7 @@ func (n *Node) HasValueDFS(value int) bool {
 	return true
 }
 
-func (n *Node) PrintNodes() {
+func (n *Node[T]) PrintNodes() {
 	if n.RightChild != nil {
 		n.RightChild.PrintNodes()
 	}

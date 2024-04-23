@@ -1,4 +1,4 @@
-package algorithms
+package rate_limiting
 
 import (
 	"context"
@@ -14,8 +14,10 @@ type TokenBucket struct {
 	// Maximum number of tokens available.
 	maxCapacity int
 
+	// Current number of tokens available.
 	currentTokens int
-	mutex         sync.Mutex
+
+	mutex sync.Mutex
 }
 
 func NewTokenBucket(refreshRate, capacity int) *TokenBucket {
@@ -27,6 +29,7 @@ func NewTokenBucket(refreshRate, capacity int) *TokenBucket {
 	}
 }
 
+// ProcessRequests will process requests sent to the request channel.
 func (lb *TokenBucket) ProcessRequests(ctx context.Context, requestChan <-chan Request) {
 	for {
 		select {
@@ -37,7 +40,9 @@ func (lb *TokenBucket) ProcessRequests(ctx context.Context, requestChan <-chan R
 				log.Println("no tokens available, discarding request")
 				continue
 			}
-			log.Printf("processed request %s at %s with content %s \n", req.ID, time.Now().Format(time.RFC3339), req.Content)
+
+			log.Printf("processed request %s at %s with content %s \n", req.GetID(), time.Now().Format(time.RFC3339), req.GetContent())
+			lb.removeToken()
 		}
 	}
 }
@@ -66,6 +71,16 @@ func (lb *TokenBucket) addToken() {
 
 	if lb.currentTokens < lb.maxCapacity {
 		lb.currentTokens++
+	}
+}
+
+// removeToken will remove a token from the bucket
+func (lb *TokenBucket) removeToken() {
+	lb.mutex.Lock()
+	defer lb.mutex.Unlock()
+
+	if lb.currentTokens > 0 {
+		lb.currentTokens--
 	}
 }
 
