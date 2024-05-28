@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-// Fifo queue
+// Queue represents a fifo queue
 type Queue[T any] struct {
 	elements []T
 }
