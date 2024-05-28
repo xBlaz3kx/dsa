@@ -9,4 +9,9 @@ func TestBinarySearch(t *testing.T) {
 	if index != 6 || !found {
 		t.Error("Expected 6, got ", index)
 	}
+
+	_, found = BinarySearch(array, 0)
+	if found {
+		t.Error("Element should not be found")
+	}
 }

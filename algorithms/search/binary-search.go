@@ -7,7 +7,6 @@ import (
 
 // BinarySearch searches for a number in a sorted array using the binary search algorithm
 func BinarySearch(array []int, num int) (index int, found bool) {
-
 	// Ensure array is sorted
 	sort.Ints(array)
 
