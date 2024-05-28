@@ -8,24 +8,24 @@ tests using the `go test -v ./...` command.
 
 ## Data Structures
 
-- [Linked List](structures/linked-list/linkedlist.go) (also thread-safe version)
+- [Linked List](structures/linked-list) (with thread-safe version)
     - [Singly Linked List](structures/linked-list/linkedlist.go)
-- [Stack](structures/stack/stack.go)
-- [Queue](structures/queue/queue.go)
+- [Stack](structures/stack/stack.go) (with thread-safe version)
+- [Queue](structures/queue) (with thread-safe version)
 - [Binary Search Tree](structures/trees/binary-tree.go) (with traversal and search)
 - TODO [Heap](heap.go)
-- TODO [Graph](structures/graphs/graphs.go) (with BFS, DFS, topological sort and using adjacency list and matrix
+- [Graph](structures/graphs) (with BFS, DFS, topological sort, using both adjacency list and matrix
   techniques)
 
 ## Algorithms
 
-- [Sorting](algorithms/sorting/sorting.go)
+- [Sorting](algorithms/sorting)
     - [Bubble Sort](algorithms/sorting/bubble-sort.go)
-    - [Selection Sort](sorting.go)
+    - TODO [Selection Sort](sorting.go)
     - [Insertion Sort](algorithms/sorting/insertion-sort.go)
     - [Merge Sort](algorithms/sorting/merge-sort.go)
     - [Quick Sort](algorithms/sorting/quick-sort.go)
-- [Searching](searching.go)
+- [Searching](algorithms/search)
     - [Linear Search](algorithms/search/linear-search.go)
     - [Binary Search](algorithms/search/binary-search.go)
   
