@@ -26,7 +26,7 @@ func TestTokenBucket(t *testing.T) {
 			case <-ctx.Done():
 				return
 			default:
-				requestChan <- NewRequest("is bucket leaking?")
+				requestChan <- NewRequest("has token?")
 				time.Sleep(time.Millisecond * time.Duration(rand.Intn(maxSleep-minSleep)+minSleep))
 			}
 		}
