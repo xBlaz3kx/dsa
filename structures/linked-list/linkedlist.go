@@ -2,8 +2,14 @@ package linked_list
 
 import (
 	"errors"
-	"fmt"
 )
+
+type List[T comparable] interface {
+	AddElement(val T)
+	GetElements() []T
+	RemoveElement(val T) error
+	FindElement(val T) (*T, error)
+}
 
 // Singly linked list
 type SinglyLinkedList[T comparable] struct {
@@ -43,20 +49,27 @@ func (l *SinglyLinkedList[T]) AddElement(val T) {
 	}
 }
 
-// GetElements prints all elements in a linked list
-func (l *SinglyLinkedList[T]) GetElements() {
-	next := l.head
-	for next != nil {
-		fmt.Println(next.Value)
-		next = next.next
+// GetElements returns values of elements in a linked list.
+func (l *SinglyLinkedList[T]) GetElements() []T {
+	elements := []T{}
+
+	element := l.head
+	for element != nil {
+		// Add element to the list
+		elements = append(elements, element.Value)
+
+		// Move to the next element
+		element = element.next
 	}
+
+	return elements
 }
 
 // RemoveElement removes an element from a linked list
-func (l *SinglyLinkedList[T]) RemoveElement(val T) *SinglyLinkedList[T] {
+func (l *SinglyLinkedList[T]) RemoveElement(val T) error {
 	// If head is nil, return the list
 	if l.head == nil {
-		return l
+		return errors.New("list is empty")
 	}
 
 	element := l.head
@@ -73,7 +86,7 @@ func (l *SinglyLinkedList[T]) RemoveElement(val T) *SinglyLinkedList[T] {
 		element = element.next
 	}
 
-	return l
+	return nil
 }
 
 // FindElement finds an element in a linked list
