@@ -27,6 +27,10 @@ All the implementations are tested using unit tests. You can find the tests in t
 - [Searching](algorithms/search)
     - [Linear Search](algorithms/search/linear-search.go)
     - [Binary Search](algorithms/search/binary-search.go)
+- TODO [Sliding Window](algorithms/sliding-window.go)
+- [Rate Limiting](algorithms/rate-limiting)
+  - [Leaky Bucket](algorithms/rate-limiting/leaky-bucket.go)
+  - [Token Bucket](algorithms/rate-limiting/token-bucket.go)
 
 ## Running unit tests
 
