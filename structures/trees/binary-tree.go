@@ -7,22 +7,17 @@ import (
 	"github.com/xBlaz3kx/dsa/structures/queue"
 )
 
-type BinaryTree[T any] struct {
+type BinaryTree[T comparable] struct {
 	root *Node[T]
 }
 
-func NewBinaryTree[T any]() *BinaryTree[T] {
+func NewBinaryTree[T comparable]() *BinaryTree[T] {
 	return &BinaryTree[T]{
 		root: nil,
 	}
 }
 
-func (t *BinaryTree[T]) Print() {
-	if t.root != nil {
-		t.root.PrintNodes()
-	}
-}
-
+// Insert adds a new node to the binary tree.
 func (t *BinaryTree[T]) Insert(value T) {
 	if t.root != nil {
 		t.root.AddNode(value)
@@ -32,13 +27,17 @@ func (t *BinaryTree[T]) Insert(value T) {
 	t.root = &Node[T]{Value: value}
 }
 
-func (t *BinaryTree[T]) FindBFS(value any) bool {
-	q := queue.NewQueue[*Node]()
+// FindBFS traverses the binary tree using BFS.
+func (t *BinaryTree[T]) FindBFS(value T) bool {
+	// Use the queue to keep track of the neighbor nodes that need to be visited.
+	q := queue.NewQueue[*Node[T]]()
 
 	q.Push(t.root.LeftChild)
 	q.Push(t.root.RightChild)
 
+	// While the queue has elements
 	for !q.IsEmpty() {
+
 		pop, err := q.Pop()
 		if err != nil {
 			continue
@@ -62,8 +61,9 @@ func (t *BinaryTree[T]) FindBFS(value any) bool {
 	return false
 }
 
+// BFS traverses the binary tree using BFS.
 func (t *BinaryTree[T]) BFS() {
-	q := queue.NewQueue[*Node]()
+	q := queue.NewQueue[*Node[T]]()
 
 	if t.root != nil {
 		q.Push(t.root.LeftChild)
@@ -71,6 +71,7 @@ func (t *BinaryTree[T]) BFS() {
 	}
 
 	for !q.IsEmpty() {
+		// Pop an element from the queue (looping through all the adjacent nodes)
 		pop, err := q.Pop()
 		if err != nil {
 			break
@@ -93,70 +94,6 @@ func (t *BinaryTree[T]) BFS() {
 }
 
 func (t *BinaryTree[T]) FindDFS(value int) bool {
-	return t.root.HasValueDFS(value)
-}
-
-type Node[T any] struct {
-	Value      T
-	LeftChild  *Node[T]
-	RightChild *Node[T]
-}
-
-func (n *Node[T]) AddNode(value T) {
-	// Rule: Left child value should be always lesser than right child value
-	if n.Value < value {
-		if n.RightChild == nil {
-			// Put as right child
-			n.RightChild = &Node{Value: value}
-			return
-		}
-
-		// Add to right node as a child
-		n.RightChild.AddNode(value)
-	} else {
-		if n.LeftChild == nil {
-			n.LeftChild = &Node{Value: value}
-			return
-		}
-
-		// Put as left child's node
-		n.LeftChild.AddNode(value)
-	}
-}
-
-func (n *Node[T]) HasValueDFS(value T) bool {
-
-	// Check if this nodes' value matches the searched value
-	if n.Value != value {
-
-		if n.Value > value {
-			// Check left child recursively
-			if n.LeftChild != nil {
-				return n.LeftChild.HasValueDFS(value)
-			}
-
-			return false
-		} else {
-			// Check right child recursively
-			if n.RightChild != nil {
-				return n.RightChild.HasValueDFS(value)
-			}
-
-			return false
-		}
-	}
-
-	return true
-}
-
-func (n *Node[T]) PrintNodes() {
-	if n.RightChild != nil {
-		n.RightChild.PrintNodes()
-	}
-
-	if n.LeftChild != nil {
-		n.LeftChild.PrintNodes()
-	}
-
-	fmt.Println(n.Value)
+	// return t.root.HasValueDFS(value)
+	return false
 }
