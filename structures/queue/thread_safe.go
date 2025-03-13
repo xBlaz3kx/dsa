@@ -35,8 +35,9 @@ func (q *ThreadSafeQueue[T]) Pop() (*T, error) {
 		return nil, errors.New("queue is empty")
 	}
 
-	defer q.mutex.Unlock()
 	q.mutex.Lock()
+	defer q.mutex.Unlock()
+
 	// Get last element
 	lastElementIndex := len(q.elements) - 1
 	element := q.elements[lastElementIndex]
@@ -49,10 +50,16 @@ func (q *ThreadSafeQueue[T]) Pop() (*T, error) {
 
 // Size returns the size of the queue
 func (q *ThreadSafeQueue[T]) Size() int {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+
 	return len(q.elements)
 }
 
 // IsEmpty checks if the queue is empty
 func (q *ThreadSafeQueue[T]) IsEmpty() bool {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+
 	return q.Size() == 0
 }

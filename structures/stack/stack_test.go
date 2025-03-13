@@ -1,6 +1,10 @@
 package stack
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestStack(t *testing.T) {
 	stack := NewStack[int]()
@@ -10,27 +14,21 @@ func TestStack(t *testing.T) {
 	stack.Push(4)
 
 	val, err := stack.Pop()
-	if *val != 4 || err != nil {
-		t.Error("Expected 4")
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, 4, *val)
 
 	val, err = stack.Pop()
-	if *val != 3 || err != nil {
-		t.Error("Expected 3")
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, 3, *val)
 
 	val, err = stack.Pop()
-	if *val != 2 || err != nil {
-		t.Error("Expected 2")
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, 2, *val)
 
 	val, err = stack.Pop()
-	if *val != 1 || err != nil {
-		t.Error("Expected 1")
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, 1, *val)
 
 	val, err = stack.Pop()
-	if err == nil {
-		t.Error("Expected error")
-	}
+	assert.ErrorContains(t, err, "stack is empty")
 }

@@ -12,7 +12,7 @@ func TestLeakyBucket(t *testing.T) {
 	ctx, end := context.WithTimeout(context.Background(), 10*time.Second)
 	defer end()
 
-	buckit := NewLeakyBucket(1000, 5)
+	bucket := NewLeakyBucket(1000, 5)
 
 	// Generate requests for the bucket
 	go func() {
@@ -25,7 +25,7 @@ func TestLeakyBucket(t *testing.T) {
 				return
 			default:
 				// Add random delay to publishing
-				err := buckit.AddRequestToBucket(NewRequest("is bucket leaking?"))
+				err := bucket.AddRequestToBucket(NewRequest("is bucket leaking?"))
 				if err == nil {
 					log.Println("Request scheduled for processing")
 				} else {
@@ -39,5 +39,5 @@ func TestLeakyBucket(t *testing.T) {
 	}()
 
 	// Start will block the execution until the context is done
-	buckit.Start(ctx)
+	bucket.Start(ctx)
 }

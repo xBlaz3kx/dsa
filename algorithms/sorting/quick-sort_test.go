@@ -1,8 +1,9 @@
 package sorting
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestQuicksort(t *testing.T) {
@@ -10,7 +11,5 @@ func TestQuicksort(t *testing.T) {
 
 	QuickSort(array, 0, len(array)-1)
 
-	if !reflect.DeepEqual([]int{1, 2, 3, 6, 11, 15, 22, 31, 50}, array) {
-		t.Errorf("Expected [1, 2, 3, 6, 11, 15, 22, 31, 50], got %v", array)
-	}
+	assert.Equal(t, []int{1, 2, 3, 6, 11, 15, 22, 31, 50}, array)
 }
