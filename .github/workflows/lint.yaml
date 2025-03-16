@@ -1,0 +1,43 @@
+name: Lint
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '.run/**'
+      - '.vscode/**'
+      - 'config/**'
+      - 'assets/**'
+
+  pull_request:
+    types: [ opened, synchronize ]
+    paths-ignore:
+      - '.run/**'
+      - '.vscode/**'
+      - 'config/**'
+      - 'assets/**'
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Go code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23.0
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.62.0
+          args: --timeout=3m
