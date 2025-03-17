@@ -17,11 +17,11 @@ func NewThreadSafeQueue[T any]() *ThreadSafeQueue[T] {
 
 // Push pushes the element in front of the queue.
 func (q *ThreadSafeQueue[T]) Push(element T) {
-	// Push in front of the queue
-	var newElementsArray []T
-
 	q.mutex.Lock()
 	defer q.mutex.Unlock()
+
+	// Push in front of the queue
+	var newElementsArray []T
 
 	newElementsArray = append(newElementsArray, element)
 	newElementsArray = append(newElementsArray, q.elements...)
@@ -58,8 +58,5 @@ func (q *ThreadSafeQueue[T]) Size() int {
 
 // IsEmpty checks if the queue is empty
 func (q *ThreadSafeQueue[T]) IsEmpty() bool {
-	q.mutex.Lock()
-	defer q.mutex.Unlock()
-
 	return q.Size() == 0
 }

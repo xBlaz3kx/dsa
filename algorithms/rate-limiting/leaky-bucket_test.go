@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
 )
@@ -14,8 +15,12 @@ func TestLeakyBucket(t *testing.T) {
 
 	bucket := NewLeakyBucket(1000, 5)
 
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	// Generate requests for the bucket
 	go func() {
+		defer wg.Done()
 		minSleep := 0
 		maxSleep := 300
 
@@ -35,9 +40,13 @@ func TestLeakyBucket(t *testing.T) {
 				time.Sleep(time.Millisecond * time.Duration(rand.Intn(maxSleep-minSleep)+minSleep))
 			}
 		}
-
 	}()
 
 	// Start will block the execution until the context is done
-	bucket.Start(ctx)
+	go func() {
+		defer wg.Done()
+		bucket.Start(ctx)
+	}()
+
+	wg.Wait()
 }
