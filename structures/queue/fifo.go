@@ -40,6 +40,19 @@ func (q *Queue[T]) Pop() (*T, error) {
 	return &element, nil
 }
 
+// Peek checks the latest element from the queue.
+func (q *Queue[T]) Peek() (*T, error) {
+	if q.IsEmpty() {
+		return nil, errors.New("queue is empty")
+	}
+
+	// Get last element
+	lastElementIndex := len(q.elements) - 1
+	element := q.elements[lastElementIndex]
+
+	return &element, nil
+}
+
 // Size returns the size of the queue
 func (q *Queue[T]) Size() int {
 	return len(q.elements)
