@@ -52,16 +52,14 @@ func (lb *TokenBucket) Start(ctx context.Context) {
 	processingRate := time.Duration(lb.refreshRate) * time.Millisecond
 	ticker := time.NewTicker(processingRate)
 
-	go func() {
-		for {
-			select {
-			case _ = <-ticker.C:
-				lb.addToken()
-			case <-ctx.Done():
-				return
-			}
+	for {
+		select {
+		case _ = <-ticker.C:
+			lb.addToken()
+		case <-ctx.Done():
+			return
 		}
-	}()
+	}
 }
 
 // addToken will add a token if the max capacity is not reached.

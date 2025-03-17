@@ -3,6 +3,7 @@ package rate_limiting
 import (
 	"context"
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
 )
@@ -15,8 +16,13 @@ func TestTokenBucket(t *testing.T) {
 	requestChan := make(chan Request, 100)
 	defer close(requestChan)
 
+	var wg sync.WaitGroup
+	wg.Add(3)
+
 	// Generate requests for the bucket
 	go func() {
+		defer wg.Done()
+
 		minSleep := 0
 		maxSleep := 300
 		for {
@@ -31,6 +37,15 @@ func TestTokenBucket(t *testing.T) {
 
 	}()
 
-	bucket.Start(ctx)
-	bucket.ProcessRequests(ctx, requestChan)
+	go func() {
+		defer wg.Done()
+		bucket.Start(ctx)
+	}()
+
+	go func() {
+		defer wg.Done()
+		bucket.ProcessRequests(ctx, requestChan)
+	}()
+
+	wg.Wait()
 }
