@@ -2,6 +2,8 @@ package graph
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAdjacencyListGraph_FindUsingBFS(t *testing.T) {
@@ -39,7 +41,6 @@ func TestAdjacencyListGraph_FindUsingBFS(t *testing.T) {
 }
 
 func TestAdjacencyListGraph_FindUsingDFS(t *testing.T) {
-
 	graph := NewAdjacencyListGraph()
 
 	graph.AddEdge(0, 1)
@@ -81,9 +82,7 @@ func TestAdjacencyListGraph_IsCyclic(t *testing.T) {
 	cyclicGraph.AddEdge(1, 2)
 	cyclicGraph.AddEdge(2, 0)
 
-	if !cyclicGraph.IsCyclic() {
-		t.Errorf("Graph is cyclic, but IsCyclic returned false")
-	}
+	assert.Truef(t, cyclicGraph.IsCyclic(), "Graph is cyclic, but IsCyclic returned false")
 
 	nonCyclicGraph := NewAdjacencyListGraph()
 
@@ -91,9 +90,7 @@ func TestAdjacencyListGraph_IsCyclic(t *testing.T) {
 	nonCyclicGraph.AddEdge(1, 2)
 	nonCyclicGraph.AddEdge(2, 3)
 
-	if nonCyclicGraph.IsCyclic() {
-		t.Errorf("Graph is not cyclic, but IsCyclic returned true")
-	}
+	assert.False(t, cyclicGraph.IsCyclic(), "Graph is not cyclic, but IsCyclic returned true")
 }
 
 func TestAdjacencyListGraph_TopologicalSort(t *testing.T) {

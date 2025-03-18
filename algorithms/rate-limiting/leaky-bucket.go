@@ -45,7 +45,6 @@ func (lb *LeakyBucket) AddRequestToBucket(req Request) error {
 		Content:     req.GetContent(),
 		SubmittedAt: time.Now(),
 	}
-
 	lb.queue.Push(entry)
 	return nil
 }

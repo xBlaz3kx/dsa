@@ -1,8 +1,9 @@
 package sorting
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_insertionSort(t *testing.T) {
@@ -10,7 +11,5 @@ func Test_insertionSort(t *testing.T) {
 
 	InsertionSort(array)
 
-	if !reflect.DeepEqual([]int{1, 2, 3, 6, 11, 15, 22, 31, 50}, array) {
-		t.Errorf("Expected [1, 2, 3, 6, 11, 15, 22, 31, 50], got %v", array)
-	}
+	assert.Equal(t, []int{1, 2, 3, 6, 11, 15, 22, 31, 50}, array)
 }
